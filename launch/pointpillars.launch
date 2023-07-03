@@ -1,0 +1,6 @@
+<launch>
+  
+  <node name="mmdet" type="ros.py" pkg="mmdet" output="screen"/>
+  
+  <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find mmdet)/launch/pointpillars.rviz" /> -->
+</launch>

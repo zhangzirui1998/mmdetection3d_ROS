@@ -1,5 +1,5 @@
 # pointpillars_ros
-A ros implement for pointpillars (mmdeection3d based)
+A ros implement for pointpillars (mmdetection3d based)
 
 ## Usage
 ```python

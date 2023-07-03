@@ -13,7 +13,7 @@ This makes it a complete ros package to run.
 
 It is worth saying that mm3d_ros is based on OpenPCDet_ros rewritten, thank you very much for the open source code!!!
 ### TODO LIST:
-    multi object tracking
+    Multi Object Tracking
 
 ```python
 @misc{mmdet3d2020,

@@ -83,7 +83,7 @@ class Pointpillars_ROS:
         boxes_lidar = result[0]['boxes_3d'][mask].tensor.cpu().numpy()
         label = result[0]['labels_3d'][mask].numpy()
         arr_bbox = BoundingBoxArray()
-        for i in range(scores.size):
+        for i in range(boxes_lidar.shape[0]):
             bbox = BoundingBox()
             bbox.header.frame_id = msg.header.frame_id
             bbox.header.stamp = rospy.Time.now()

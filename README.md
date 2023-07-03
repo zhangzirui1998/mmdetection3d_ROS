@@ -11,7 +11,9 @@ This repository is based on mmdetection3d for ros adaptation, please install mmd
 
 This makes it a complete ros package to run.
 
-### It is worth saying that mm3d_ros is based on OpenPCDet_ros rewritten, thank you very much for the open source code!!!
+It is worth saying that mm3d_ros is based on OpenPCDet_ros rewritten, thank you very much for the open source code!!!
+### TODO LIST:
+    multi object tracking
 
 ```python
 @misc{mmdet3d2020,

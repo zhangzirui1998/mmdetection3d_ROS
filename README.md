@@ -1,10 +1,23 @@
 # pointpillars_ros
-A ros implement for pointpillars (OpenPCDet based)
+A ros implement for pointpillars (mmdeection3d based)
 
 ## Usage
-
-First you need to complete the reproduction of [OpenPCDet](https://github.com/open-mmlab/OpenPCDet)
-
-This repository is based on OpenPCDet for ros adaptation, so only added content is provided. 
+```python
+catkin_make
+source devel/setup.bash
+roslaunch mmdet pointpillars.launch
+```
+This repository is based on mmdetection3d for ros adaptation, please install mmdetection3d first. 
 
 This makes it a complete ros package to run.
+
+### It is worth saying that mm3d_ros is based on OpenPCDet_ros rewritten, thank you very much for the open source code!!!
+
+```python
+@misc{mmdet3d2020,
+    title={{MMDetection3D: OpenMMLab} next-generation platform for general {3D} object detection},
+    author={MMDetection3D Contributors},
+    howpublished = {\url{https://github.com/open-mmlab/mmdetection3d}},
+    year={2020}
+}
+```

@@ -5,7 +5,7 @@ A ros implement for pointpillars (mmdeection3d based)
 ```python
 catkin_make
 source devel/setup.bash
-roslaunch mmdet pointpillars.launch
+roslaunch xxx pointpillars.launch
 ```
 This repository is based on mmdetection3d for ros adaptation, please install mmdetection3d first. 
 

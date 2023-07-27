@@ -68,7 +68,8 @@ class Pointpillars_ROS:
         # points = np.stack((x, y, z, i)).T
 
         # 在回调函数中
-        points = np.array(pc2.read_points_list(msg))
+        points = np.array(pc2.read_points_list(msg, field_names = ("x", "y", "z","intensity"), skip_nans=True))
+        points[:, [3]] = 0
         points_class = get_points_type('LIDAR')
         points_mmdet3d = points_class(points, points_dim=points.shape[-1], attribute_dims=None)
         torch.cuda.synchronize()
@@ -110,7 +111,7 @@ class Pointpillars_ROS:
     def publish_test(self, cloud, frame_id):
         header = Header()
         header.stamp = rospy.Time()
-        header.frame_id = "/base_link"
+        header.frame_id = frame_id
         fields = [PointField('x', 0, PointField.FLOAT32, 1),
                   PointField('y', 4, PointField.FLOAT32, 1),
                   PointField('z', 8, PointField.FLOAT32, 1),

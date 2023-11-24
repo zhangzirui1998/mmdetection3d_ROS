@@ -1,0 +1,11 @@
+# 客户端请求时发送
+bool object_pose
+---
+# 服务端响应发送x,y,z,w,l,h,r
+float64 object_x
+float64 object_y
+float64 object_z
+float64 object_w
+float64 object_l
+float64 object_h
+float64 object_r

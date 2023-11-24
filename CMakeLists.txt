@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(mmdet)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -10,9 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   jsk_recognition_msgs
 )
 
-
-
-
 catkin_package(
 )
 include_directories(
@@ -20,3 +17,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+# Mark executable scripts (Python etc.) for installation
+# in contrast to setup.py, you can choose the destination
+catkin_install_python(PROGRAMS
+  scripts/pp_ros.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

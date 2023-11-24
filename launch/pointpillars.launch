@@ -1,6 +1,6 @@
 <launch>
-  
-  <node name="mmdet" type="ros.py" pkg="mmdet" output="screen"/>
+  <node pkg="rosbag" type="play" name="player" output="log" args="-l /home/rui/kitti/2011_10_03/kitti_2011_10_03_drive_0027_synced.bag" />
+  <node name="mmdet" type="pp_ros.py" pkg="mmdet" output="screen"/>
   
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find mmdet)/launch/pointpillars.rviz" />
 </launch>

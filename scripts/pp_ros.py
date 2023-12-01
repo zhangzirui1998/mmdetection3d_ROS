@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# from mmdetection3d_ROS.srv import detector, detectorRequest, detectorResponse
+from mmdetection3d_ROS.srv import detector, detectorRequest, detectorResponse
 import rospy
 from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
@@ -17,34 +19,10 @@ sys.path.append("/home/rui/pp_ros/src/mmdetection3d_ROS/scripts/mmdet3d")
 from mmdet3d.apis import inference_detector, init_model
 from mmdet3d.core.points import get_points_type
 
+
 class Pointpillars_ROS:
 
     def lidar_callback(self, msg):
-
-        #pcl_msg = pc2.read_points(msg, field_names = ("x", "y", "z", "intensity"), skip_nans=True)
-        # 这里的field_names可以不要，不要就是把数据全部读取进来。也可以用field_names = ("x", "y", "z")这个只读xyz坐标
-        # 得到的pcl_msg是一个generator生成器，如果要一次获得全部的点，需要转成list
-        #np_p = np.array(list(pcl_msg), dtype=np.float32)
-        # print(np_p.shape)
-        # 旋转轴
-        # rand_axis = [0,1,0]
-        # 旋转角度
-        # yaw = 0.1047
-        # yaw = 0.0
-        # 返回旋转矩阵
-        # rot_matrix = self.rotate_mat(rand_axis, yaw)
-        # np_p_rot = np.dot(rot_matrix, np_p[:,:3].T).T
-
-        # convert to xyzi point cloud
-        # x = np_p[:, 0].reshape(-1)
-        # print(np.max(x),np.min(x))
-        # y = np_p[:, 1].reshape(-1)
-        # z = np_p[:, 2].reshape(-1)
-        # if np_p.shape[1] == 4: # if intensity field exists
-        #    i = np_p[:, 3].reshape(-1)
-        # else:
-        #   i = np.zeros((np_p.shape[0], 1)).reshape(-1)
-        # points = np.stack((x, y, z, i)).T
 
         # 在回调函数中，读取雷达点云，转换成numpy数组
         points = np.array(pc2.read_points_list(msg))
@@ -76,6 +54,8 @@ class Pointpillars_ROS:
         label = result[0]['labels_3d'][mask].numpy()
         # 创建BoundingBoxArray消息，存储多个目标的bbox信息
         arr_bbox = BoundingBoxArray()
+        self.resp = []
+        self.arr_resp = []
         for i in range(boxes_lidar.shape[0]):
             # 创建BoundingBox消息，存储单个目标的bbox信息
             bbox = BoundingBox()
@@ -89,6 +69,22 @@ class Pointpillars_ROS:
             bbox.dimensions.x = float(boxes_lidar[i][3])  # width
             bbox.dimensions.y = float(boxes_lidar[i][4])  # length
             bbox.dimensions.z = float(boxes_lidar[i][5])  # height
+            # 获取目标位置信息
+            object_x = float(boxes_lidar[i][0])
+            object_y = float(boxes_lidar[i][1])
+            object_z = float(boxes_lidar[i][2])
+            object_w = float(boxes_lidar[i][3])
+            object_l = float(boxes_lidar[i][4])
+            object_h = float(boxes_lidar[i][5])
+            object_r = float(boxes_lidar[i][6])
+            # 创建并返回服务响应
+            self.resp.append(object_x)
+            self.resp.append(object_y)
+            self.resp.append(object_z)
+            self.resp.append(object_w)
+            self.resp.append(object_l)
+            self.resp.append(object_h)
+            self.resp.append(object_r)
             # 用四元数来表示bbox在空间中的朝向信息
             q = Quaternion(axis=(0, 0, 1), radians=float(boxes_lidar[i][6]))
             bbox.pose.orientation.x = q.x
@@ -105,38 +101,15 @@ class Pointpillars_ROS:
             pub_bbox.publish(arr_bbox)
             self.publish_test(points, msg.header.frame_id)
 
-    def publish_test(self, cloud, frame_id):
-        '''
-        将点云数据转换为 ROS 消息类型，并发布到名为 pub_velo 的话题中
-        '''
-        header = Header()
-        header.stamp = rospy.Time()  # 设置时间戳为当前时间
-        header.frame_id = "/base_link"  # 设置坐标系 ID 为 "/base_link"，通常是机器人的基座坐标系
-        # header.frame_id = frame_id
-        # 包含点云数据字段信息的列表，每个字段包含名称、偏移量、数据类型和计数信息
-        fields = [PointField('x', 0, PointField.FLOAT32, 1),
-                  PointField('y', 4, PointField.FLOAT32, 1),
-                  PointField('z', 8, PointField.FLOAT32, 1),
-                  PointField('intensity', 12, PointField.FLOAT32, 1)]  # ,PointField('label', 16, PointField.FLOAT32, 1)
-        # creat_cloud不像read，他必须要有fields,而且field定义有两种。一个是上面的，一个是下面的fields=_make_point_field(4)
-        # 创建一个 PointCloud2 类型的 ROS 消息 msg_segment，使用点云数据 cloud、头信息 header 和数据字段 fields
-        msg_segment = pc2.create_cloud(header=header, fields=fields, points=cloud)
-        pub_velo.publish(msg_segment)
-        # pub_image.publish(image_msg)
 
+    def detector_server(self, req):
+        # 解析提交的数据
+        if req.success:
 
-        # def detector_server(req):
-#     # 解析提交的数据
-#     if (req.object_pose):
-#         # object_x = 
-#         # object_y = 
-#         # object_z =
-#         # object_w =
-#         # object_l =
-#         # object_h =
-#         # object_r =
-#         resp = detectorResponse()
-#         return resp
+            # 创建响应对象，赋值并返回
+            resp = detectorResponse()
+            resp.object_pose = self.arr_resp
+        return resp
 
 
 if __name__ == '__main__':
@@ -163,8 +136,8 @@ if __name__ == '__main__':
     pub_velo = rospy.Publisher("/modified", PointCloud2, queue_size=1)
     pub_bbox = rospy.Publisher("/detections", BoundingBoxArray, queue_size=10)
 
-    # # 6.创建服务对象
-    # server = rospy.Service('detector', detector, detector_server)
+    # 6.创建服务对象
+    server = rospy.Service('detector', detector, sec.detector_server)
 
     try:
         rospy.spin()

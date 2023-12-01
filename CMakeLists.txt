@@ -8,6 +8,19 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   jsk_recognition_msgs
+  message_generation
+)
+
+# Generate services in the 'srv' folder
+add_service_files(
+  FILES
+  detector.srv
+)
+
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs#   diagnostic_msgs#   geometry_msgs#   moveit_msgs#   sensor_msgs#   shape_msgs#   std_msgs#   trajectory_msgs
 )
 
 catkin_package(
@@ -21,5 +34,6 @@ include_directories(
 # in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/pp_ros.py
+  scripts/kehuduan_test.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
